@@ -29,6 +29,9 @@ export default {
     }
   },
   Multisig: {
+    id: (obj: {address: string, datastore: Datastore}) => {
+      return obj.address;
+    },
     signingRequests: (obj: {address: string, datastore: Datastore}) => {
       return obj.datastore.getSigningRequests(obj.address);
     },

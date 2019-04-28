@@ -27,6 +27,7 @@ export default gql`
   }
 
   type Multisig {
+    id: ID!
     signingRequest(id: ID!): SigningRequest
     signingRequests: [SigningRequest!]!
   }
