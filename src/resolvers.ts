@@ -1,6 +1,6 @@
 import { Contract } from 'ethers';
 import { Provider } from 'ethers/providers';
-import { bigNumberify, recoverAddress } from 'ethers/utils';
+import { bigNumberify, verifyMessage, arrayify } from 'ethers/utils';
 import { abi as multisigABI } from '@metamultisig/contract/build/contracts/MetaMultisig.json';
 import filterAsync from 'node-filter-async';
 import GraphQLJSON from 'graphql-type-json';
@@ -14,8 +14,10 @@ interface Context {
 
 async function filterSignatures(multisig: Contract, id: string, sigs: Array<string>) {
   return filterAsync(sigs, async (sig: string) => {
-    const address = recoverAddress(id, sig);
-    return !(await multisig.keyholders(address)).isZero();
+    const address = verifyMessage(arrayify(id), sig);
+    const weight = await multisig.keyholders(address);
+    console.log({address: address, weight: weight})
+    return !weight.isZero();
   });
 }
 
@@ -60,7 +62,7 @@ export default {
     submitSigningRequest: async (ds: Datastore, {address, request}: {address: string, request: SigningRequest}, context: Context) => {
       const multisig = new Contract(address, Array.from(multisigABI), context.provider);
 
-      if(request.nonce < await multisig.nextNonce()) {
+      if(request.nonce < (await multisig.nextNonce()).toNumber()) {
         return null;
       }
 
@@ -83,7 +85,7 @@ export default {
       }
 
       const multisig = new Contract(args.address, Array.from(multisigABI), context.provider);
-      const keyholder = recoverAddress(args.id, args.signature);
+      const keyholder = verifyMessage(arrayify(args.id), args.signature);
       if((await multisig.keyholders(keyholder)).isZero()) {
         return null;
       }

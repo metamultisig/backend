@@ -12,7 +12,7 @@ export default gql`
     abi: JSON
     nonce: Int!
     signatures: [String!]!
-    description: String!
+    description: String
   }
 
   type SigningRequest {
@@ -23,7 +23,7 @@ export default gql`
     abi: JSON
     nonce: Int!
     signatures: [String!]!
-    description: String!
+    description: String
   }
 
   type Multisig {
@@ -37,7 +37,7 @@ export default gql`
   }
 
   type Mutation {
-    submitSigningRequest(address: String!, request: NewSigningRequest!): SigningRequest
+    submitSigningRequest(address: Address!, request: NewSigningRequest!): SigningRequest
     submitSignature(request: ID!, signature: String!): SigningRequest
   }
 `;
