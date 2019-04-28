@@ -30,7 +30,7 @@ export class MemoryDatastore implements Datastore {
   }
 
   getSigningRequests(address: string) {
-    return Object.values(this.data[address]);
+    return Object.values(this.data[address] || {});
   }
 
   getSigningRequest(address: string, id: string) {
