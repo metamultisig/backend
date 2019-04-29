@@ -8,7 +8,7 @@ export interface SigningRequest {
   abi?: string;
   nonce: number;
   signatures: Array<string>;
-  description: string;
+  description?: string;
 }
 
 export interface Datastore {
