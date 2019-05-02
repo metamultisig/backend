@@ -34,8 +34,10 @@ export default {
     id: (obj: {address: string, datastore: Datastore}) => {
       return obj.address;
     },
-    signingRequests: (obj: {address: string, datastore: Datastore}) => {
-      return obj.datastore.getSigningRequests(obj.address);
+    signingRequests: async ({address, datastore}: {address: string, datastore: Datastore}, args: {}, context: Context) => {
+      const multisig = new Contract(address, Array.from(multisigABI), context.provider);
+      const minNonce = (await multisig.nextNonce()).toNumber();
+      return datastore.getSigningRequests(address, minNonce);
     },
     signingRequest: (obj: {address: string, datastore: Datastore}, args: {id: string}) => {
       return obj.datastore.getSigningRequest(obj.address, args.id);

@@ -12,7 +12,7 @@ export interface SigningRequest {
 }
 
 export interface Datastore {
-  getSigningRequests: (address: string) => Array<SigningRequest>;
+  getSigningRequests: (address: string, minNonce: number) => Array<SigningRequest>;
   getSigningRequest: (address: string, id: string) => SigningRequest|null;
   submitSigningRequest: (address: string, request: SigningRequest) => SigningRequest;
   submitSignature: (address: string, id: string, signature: string) => SigningRequest|null;
@@ -29,8 +29,9 @@ export class MemoryDatastore implements Datastore {
     this.data = {};
   }
 
-  getSigningRequests(address: string) {
-    return Object.values(this.data[address] || {});
+  getSigningRequests(address: string, minNonce: number) {
+    return Object.values(this.data[address] || {})
+      .filter((req) => (req.nonce >= minNonce));
   }
 
   getSigningRequest(address: string, id: string) {
