@@ -68,8 +68,8 @@ export default {
         return null;
       }
 
-      request.value = request.value || bigNumberify(0);
-      request.data = request.data || '0x';
+      request.value = request.value;
+      request.data = request.data;
       request.id = await multisig.getTransactionHash(request.destination, request.value, request.data, request.nonce);
       request.signatures = await filterSignatures(multisig, request.id, request.signatures);
 
